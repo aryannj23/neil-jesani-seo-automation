@@ -138,7 +138,7 @@ PARA2:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--preview", action="store_true", help="Print output without saving")
-    parser.add_argument("--wave", choices=["1","2","all"], default="all")
+    parser.add_argument("--wave", default="all")
     parser.add_argument("--state", help="Process only one state (e.g. FL)")
     parser.add_argument("--city", help="Process only one city name")
     args = parser.parse_args()

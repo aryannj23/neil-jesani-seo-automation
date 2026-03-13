@@ -612,7 +612,7 @@ def main():
     parser = argparse.ArgumentParser(description="NeilJesaniTaxResolution.com — Programmatic Page Generator")
     parser.add_argument("--mode", choices=["preview","generate","publish","notices"],
                         default="preview", help="Execution mode")
-    parser.add_argument("--wave", choices=["1","2","all"], default="1",
+    parser.add_argument("--wave", default="1",
                         help="Location page wave to process")
     parser.add_argument("--output-dir", default="./generated_pages",
                         help="Directory for generated HTML files")
