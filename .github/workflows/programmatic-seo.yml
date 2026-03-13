@@ -1,0 +1,107 @@
+name: Programmatic SEO Pipeline
+
+# ──────────────────────────────────────────────
+# TRIGGERS
+# ──────────────────────────────────────────────
+on:
+  # Run manually from GitHub UI (recommended for testing)
+  workflow_dispatch:
+    inputs:
+      wave:
+        description: "Wave number to process (e.g. 1, 2, 3)"
+        required: true
+        default: "1"
+      mode:
+        description: "Pipeline mode"
+        required: true
+        default: "preview"
+        type: choice
+        options:
+          - preview
+          - generate
+          - publish
+
+  # Scheduled run — every Monday at 3AM UTC
+  # Uncomment below once you're confident the pipeline works
+  # schedule:
+  #   - cron: "0 3 * * 1"
+
+# ──────────────────────────────────────────────
+# JOBS
+# ──────────────────────────────────────────────
+jobs:
+  seo-pipeline:
+    runs-on: ubuntu-latest
+
+    env:
+      WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
+      WP_USERNAME: ${{ secrets.WP_USERNAME }}
+      WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Generate AI paragraphs (only in generate/publish mode)
+      - name: Generate unique paragraphs via Claude API
+        if: ${{ github.event.inputs.mode == 'generate' || github.event.inputs.mode == 'publish' }}
+        run: |
+          python generate_unique_paragraphs.py --wave ${{ github.event.inputs.wave }}
+
+      # 5. Generate HTML pages
+      - name: Generate HTML pages
+        run: |
+          python generate_pages.py --mode ${{ github.event.inputs.mode || 'preview' }} --wave ${{ github.event.inputs.wave || '1' }}
+
+      # 6. Run deduplication check (only in generate/publish mode)
+      - name: Run deduplication check
+        if: ${{ github.event.inputs.mode == 'generate' || github.event.inputs.mode == 'publish' }}
+        run: |
+          if [ -f dedup_flagged.csv ]; then
+            echo "⚠️  DUPLICATE CONTENT DETECTED — check dedup_flagged.csv"
+            cat dedup_flagged.csv
+            echo ""
+            echo "Review flagged pages before publishing."
+          else
+            echo "✅ No duplicate content detected."
+          fi
+
+      # 7. Publish to WordPress (only in publish mode)
+      - name: Publish pages to WordPress CMS
+        if: ${{ github.event.inputs.mode == 'publish' }}
+        run: |
+          python generate_pages.py --mode publish --wave ${{ github.event.inputs.wave }}
+
+      # 8. Upload dedup report as artifact (if it exists)
+      - name: Upload dedup report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dedup-report-wave-${{ github.event.inputs.wave || '1' }}
+          path: dedup_flagged.csv
+          if-no-files-found: ignore
+          retention-days: 30
+
+      # 9. Pipeline summary
+      - name: Pipeline summary
+        run: |
+          echo "────────────────────────────────────"
+          echo "✅ Pipeline completed successfully"
+          echo "   Mode:  ${{ github.event.inputs.mode || 'preview' }}"
+          echo "   Wave:  ${{ github.event.inputs.wave || '1' }}"
+          echo "────────────────────────────────────"
