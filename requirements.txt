@@ -1,0 +1,7 @@
+anthropic
+requests
+openpyxl
+pandas
+scikit-learn
+jinja2
+python-dotenv
