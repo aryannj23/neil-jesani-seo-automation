@@ -1,0 +1,26 @@
+# Environment variables (NEVER commit this)
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+env/
+
+# Generated output files
+output/
+generated_pages/
+dedup_flagged.csv
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log

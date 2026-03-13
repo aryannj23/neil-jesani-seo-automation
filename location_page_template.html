@@ -1,0 +1,255 @@
+<!--
+  NeilJesaniTaxResolution.com — Location Page Template
+  File: location_page_template.html
+  Variables: all {{variable}} placeholders are injected by generate_pages.py
+  Schema: LocalBusiness + LegalService + FAQPage + BreadcrumbList injected in <head>
+  Word count target: 2,000+ words (template ~1,200 + unique paragraphs ~400 + FAQ ~400)
+-->
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     SCHEMA MARKUP (injected by script — DO NOT EDIT MANUALLY)
+     ════════════════════════════════════════════════════════════════════════ -->
+<script type="application/ld+json">
+{{schema_json}}
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     BREADCRUMB
+     ════════════════════════════════════════════════════════════════════════ -->
+<nav class="njtr-breadcrumb" aria-label="Breadcrumb">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="/"><span itemprop="name">Home</span></a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="/locations/"><span itemprop="name">Locations</span></a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <span itemprop="name">{{city}}, {{state_abbreviation}}</span>
+      <meta itemprop="position" content="3" />
+    </li>
+  </ol>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     HERO / H1 + ANSWER-FIRST LEAD
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-hero">
+  <h1>Tax Attorney in {{city}}, {{state_name}}: IRS Audit &amp; Tax Resolution Help</h1>
+
+  <!-- ANSWER-FIRST LEAD — ~150 words, structured for Featured Snippet -->
+  <div class="njtr-answer-lead">
+    <p>If you are facing an IRS audit, tax debt, or collection action in {{city}}, {{state_name}}, you need experienced professional representation — not a general accountant. Neil Jesani's firm brings Tax Court-admitted attorneys, licensed CPAs, and Enrolled Agents to clients across the {{metro_area}}, handling IRS audits, Offers in Compromise, penalty abatement, tax liens, levies, and US Tax Court litigation. Our {{city}}-area clients benefit from the same depth of expertise we provide to clients at our Miami and Las Vegas offices: comprehensive IRS defense from the initial notice through resolution or trial. {{state_tax_context_sentence}} The nearest IRS field office serving {{city}} taxpayers is located at {{local_irs_office_address}}. For a confidential consultation about your IRS matter, call <strong>{{cta_phone}}</strong> — no obligation, no fee until we resolve your case.</p>
+  </div>
+
+  <!-- TL;DR BOX -->
+  <div class="njtr-tldr-box">
+    <strong>TL;DR</strong>
+    <ul>
+      <li>Neil Jesani's tax resolution firm serves {{city}}, {{state_abbreviation}} residents facing IRS audits, tax debt, and collections.</li>
+      <li>We have Tax Court-admitted attorneys, CPAs, and Enrolled Agents — 70+ professionals across Miami and Las Vegas.</li>
+      <li>{{state_name}} taxpayers face <strong>{{state_income_tax_rate}}</strong> state income tax — federal IRS enforcement is an additional, separate risk.</li>
+      <li>The nearest IRS Field Office to {{city}} is at {{local_irs_office_address}}.</li>
+      <li>Free confidential consultation: <strong>{{cta_phone}}</strong>.</li>
+    </ul>
+  </div>
+
+  <!-- CTA BLOCK 1 -->
+  <div class="njtr-cta-block">
+    <strong>Facing an IRS Issue in {{city}}?</strong>
+    <p>Neil Jesani's team of Tax Court attorneys, CPAs, and Enrolled Agents has resolved hundreds of complex IRS matters for high-net-worth individuals and business owners across {{state_name}}.</p>
+    <a href="/contact/" class="njtr-cta-btn">Schedule a Free Consultation</a>
+    <span class="njtr-cta-phone">or Call {{cta_phone}} — Confidential, No Obligation</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     SECTION 1: LOCAL TAX ENVIRONMENT (UNIQUE — ~200 words)
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-section">
+  <h2>IRS Enforcement in {{city}}, {{state_name}}: What Local Taxpayers Need to Know</h2>
+  {{unique_local_paragraph_1}}
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     SECTION 2: IRS FIELD OFFICE INFO
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-section">
+  <h2>Your Local IRS Field Office — and Why It Matters for {{city}} Taxpayers</h2>
+  <p>The IRS field office serving {{city}} and the surrounding {{metro_area}} is located at:</p>
+  <div class="njtr-info-box">
+    <p><strong>IRS Field Office — {{city}} Area</strong><br>
+    {{local_irs_office_address}}<br>
+    Phone: {{local_irs_phone}}<br>
+    <em>Verify current hours and appointment requirements at <a href="https://www.irs.gov/help/contact-the-irs" rel="noopener noreferrer" target="_blank">IRS.gov</a></em></p>
+  </div>
+  <p>For most taxpayers, direct contact with the IRS field office is not advisable without professional representation. Once you retain our firm and file IRS Form 2848 (Power of Attorney), all IRS communications — including calls and correspondence from this office — are redirected to us. You stop receiving IRS contacts directly, and we manage your case from that point forward.</p>
+  <p>IRS field office examinations in {{city}} are assigned to Revenue Agents who conduct office and field audits. For high-income individuals and business owners in {{metro_area}}, the IRS Large Business &amp; International (LB&amp;I) division may assign specialized teams from this office for comprehensive examinations. <a href="/services/irs-audit-defense/">Learn more about IRS audit defense →</a></p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     SECTION 3: STATE TAX CONTEXT
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-section">
+  <h2>{{state_name}} State Tax Overview for {{city}} Residents</h2>
+  <p>In addition to federal IRS obligations, {{city}} taxpayers are subject to {{state_name}} state tax rules administered by the <strong>{{state_tax_agency_name}}</strong> (<a href="{{state_tax_agency_url}}" rel="noopener noreferrer" target="_blank">{{state_tax_agency_url}}</a>).</p>
+
+  <div class="njtr-comparison-table">
+    <table>
+      <thead>
+        <tr><th>Tax Authority</th><th>Agency</th><th>Rate / Key Info</th><th>Audit Risk</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Federal (IRS)</td>
+          <td>Internal Revenue Service</td>
+          <td>Top marginal rate: 37% (2024). Capital gains: up to 20% + 3.8% NIIT.</td>
+          <td>IRS audits ~0.44% of returns nationally; higher for incomes over $400K</td>
+        </tr>
+        <tr>
+          <td>{{state_abbreviation}} State</td>
+          <td>{{state_tax_agency_name}}</td>
+          <td>{{state_income_tax_rate}}</td>
+          <td>State audit risk varies — often triggered by IRS audit results shared with state agencies</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>{{state_tax_context_detail}}</p>
+  <p>Our firm handles both federal IRS matters and coordination with state tax authorities when state examinations arise concurrently with or following federal audits.</p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     SECTION 4: UNIQUE LOCAL CONTEXT (UNIQUE — ~200 words)
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-section">
+  <h2>Tax Resolution Challenges Specific to {{city}} Taxpayers</h2>
+  {{unique_local_paragraph_2}}
+</section>
+
+<!-- CTA BLOCK 2 -->
+<div class="njtr-cta-block">
+  <strong>IRS Notice or Audit in {{city}}? We Can Help.</strong>
+  <p>Our Tax Court attorneys and CPAs represent {{city}}, {{state_abbreviation}} clients at every stage — from initial notice through appeals and Tax Court if needed.</p>
+  <a href="/contact/" class="njtr-cta-btn">Schedule a Free Consultation</a>
+  <span class="njtr-cta-phone">{{cta_phone}}</span>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     SECTION 5: SERVICES
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-section">
+  <h2>IRS Tax Resolution Services Available to {{city}}, {{state_abbreviation}} Clients</h2>
+  <p>Our firm represents {{city}}-area individuals, business owners, and their advisors in all areas of IRS controversy and tax resolution:</p>
+
+  <div class="njtr-services-grid">
+    <div class="njtr-service-card">
+      <h3><a href="/services/irs-audit-defense/">IRS Audit Defense</a></h3>
+      <p>Representation through correspondence, office, and field audits — including Global High Wealth team examinations. We file Form 2848, manage all agent contact, and present your defense.</p>
+    </div>
+    <div class="njtr-service-card">
+      <h3><a href="/services/irs-appeals/">IRS Appeals</a></h3>
+      <p>If you disagree with an audit result, we represent you before the IRS Office of Appeals — which resolves approximately 70% of disputes without Tax Court.</p>
+    </div>
+    <div class="njtr-service-card">
+      <h3><a href="/services/tax-court-litigation/">US Tax Court</a></h3>
+      <p>Tax Court-admitted attorneys represent {{city}} clients when IRS disputes require litigation. You can challenge IRS assessments in Tax Court without paying first.</p>
+    </div>
+    <div class="njtr-service-card">
+      <h3><a href="/services/irs-collections-defense/">IRS Collections Defense</a></h3>
+      <p>Stop levies, liens, and wage garnishments. We pursue Collection Due Process hearings, installment agreements, Offers in Compromise, and Currently Not Collectible status.</p>
+    </div>
+    <div class="njtr-service-card">
+      <h3><a href="/services/offer-in-compromise/">Offer in Compromise</a></h3>
+      <p>Settle IRS tax debt for less than the full amount owed when your financial situation qualifies. We prepare, submit, and negotiate OIC applications.</p>
+    </div>
+    <div class="njtr-service-card">
+      <h3><a href="/services/penalty-abatement/">IRS Penalty Abatement</a></h3>
+      <p>Request removal of IRS penalties through First-Time Abatement or reasonable cause — potentially eliminating 20–75% of your total balance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     SECTION 6: TAX COURT INFO
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-section">
+  <h2>US Tax Court Representation for {{city}} Taxpayers</h2>
+  <p>{{city}}, {{state_name}} taxpayers who disagree with an IRS determination have the right to petition the US Tax Court — the only federal court where you can challenge an IRS tax deficiency without paying the disputed amount first.</p>
+  <p><strong>{{city}}-area court information:</strong><br>{{local_court_info}}</p>
+  <p>Our Tax Court-admitted attorneys have represented clients in Tax Court proceedings for high-income individuals, business owners, and complex disputes involving multiple entities, offshore accounts, and equity compensation. <a href="/services/tax-court-litigation/">Learn more about Tax Court representation →</a></p>
+</section>
+
+<!-- CTA BLOCK 3 -->
+<div class="njtr-cta-block">
+  <strong>Representing {{city}}, {{state_abbreviation}} Clients Nationwide</strong>
+  <p>While our primary offices are in Miami, FL and Las Vegas, NV, we represent clients throughout {{state_name}} and all 50 states before the IRS, IRS Appeals, and US Tax Court.</p>
+  <a href="/contact/" class="njtr-cta-btn">Schedule a Free Confidential Consultation</a>
+  <span class="njtr-cta-phone">{{cta_phone}}</span>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     FAQ SECTION (localized)
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-faq" itemscope itemtype="https://schema.org/FAQPage">
+  <h2>Frequently Asked Questions — IRS Help in {{city}}, {{state_name}}</h2>
+
+  <div class="njtr-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+    <h3 itemprop="name">Do I need to visit your office in Miami or Las Vegas to get help with my IRS issue in {{city}}?</h3>
+    <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <p itemprop="text">No. Our firm represents clients remotely throughout {{state_name}} and all 50 states. IRS matters — including audits, appeals, collections defense, and Tax Court proceedings — are handled entirely by phone, video conference, secure document portal, and written correspondence. We file Form 2848 (Power of Attorney) so the IRS communicates with us directly, not you. You receive the same level of representation as our local Miami and Las Vegas clients, with all the technical expertise of our 70+ professional team. Call {{cta_phone}} to schedule a confidential consultation from {{city}}.</p>
+    </div>
+  </div>
+
+  <div class="njtr-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+    <h3 itemprop="name">What IRS field office handles tax matters for {{city}}, {{state_name}} taxpayers?</h3>
+    <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <p itemprop="text">The nearest IRS field office serving {{city}} and the {{metro_area}} is located at {{local_irs_office_address}}, phone {{local_irs_phone}}. However, for most IRS matters, you should not contact the IRS field office directly — contact a tax professional first. Once we file Form 2848 on your behalf, all IRS communications are redirected to our office. You will not receive direct calls or letters from the IRS. Verify current IRS office hours and appointment procedures at IRS.gov before visiting in person.</p>
+    </div>
+  </div>
+
+  <div class="njtr-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+    <h3 itemprop="name">What does {{state_name}}'s state income tax rate mean for my IRS audit risk?</h3>
+    <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <p itemprop="text">{{state_name}}'s state income tax rate is {{state_income_tax_rate}}, administered by the {{state_tax_agency_name}}. State audits are separate from IRS audits — however, the IRS and state tax agencies frequently share audit information. An IRS audit that results in a federal assessment can trigger a corresponding state examination for the same tax year. For {{city}} residents with complex returns — equity compensation, business income, rental property, or foreign assets — both federal and state audit exposure should be evaluated together. Our firm coordinates federal and state tax controversy defense where both authorities are involved.</p>
+    </div>
+  </div>
+
+  <div class="njtr-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+    <h3 itemprop="name">Can I challenge an IRS decision in Tax Court from {{city}}, {{state_name}}?</h3>
+    <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <p itemprop="text">Yes. US Tax Court accepts petitions from taxpayers nationwide — you do not need to appear in a local Tax Court to file a petition. Tax Court sessions are held in multiple cities, including sessions serving the {{metro_area}} region. Our Tax Court-admitted attorneys file petitions and represent clients through the full Tax Court process, including trial if necessary. Importantly, you can petition the Tax Court without paying the disputed IRS tax first — this is the primary advantage of Tax Court over other federal courts. The deadline to file is 90 days from the date on your Notice of Deficiency.</p>
+    </div>
+  </div>
+
+  <div class="njtr-faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+    <h3 itemprop="name">How quickly can you help a {{city}} client who just received an IRS notice?</h3>
+    <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <p itemprop="text">We begin every new engagement with an intake call to review your notice and assess your situation — typically within 24 hours of contact for urgent matters. After the initial consultation, we prepare and file Form 2848 (Power of Attorney) to redirect all IRS communications to our office immediately. Response strategies for correspondence audits, field audits, and levy notices are developed and submitted within your notice's deadline. For urgent situations — imminent levies, 90-day deficiency notices, or passport revocation risk — we prioritize same-day intake. Call {{cta_phone}} now for immediate assistance.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     NEARBY CITIES (internal links)
+     ════════════════════════════════════════════════════════════════════════ -->
+<section class="njtr-nearby">
+  <h2>Tax Resolution Services Near {{city}}, {{state_name}}</h2>
+  <p>We serve clients throughout {{state_name}} and the {{metro_area}}. If you are located in a nearby community, we can help:</p>
+  <ul class="njtr-nearby-list">
+    {{nearby_cities_links}}
+  </ul>
+  <p><a href="/locations/">View all locations we serve →</a></p>
+</section>
+
+<!-- FINAL CTA -->
+<div class="njtr-cta-block njtr-cta-final">
+  <strong>Ready to Resolve Your IRS Matter in {{city}}, {{state_name}}?</strong>
+  <p>Neil Jesani's team — Tax Court attorneys, CPAs, Enrolled Agents — is ready to help. Confidential consultation. No fee until your matter is resolved.</p>
+  <a href="/contact/" class="njtr-cta-btn">Schedule Your Free Consultation</a>
+  <span class="njtr-cta-phone">{{cta_phone}}</span>
+</div>
