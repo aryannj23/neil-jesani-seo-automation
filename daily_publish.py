@@ -97,6 +97,62 @@ def build_queue(ledger: dict) -> list[dict]:
 
 
 # ═════════════════════════════════════════════════════════════════════════
+# SYNC — pull already-published pages from WordPress into the ledger
+# ═════════════════════════════════════════════════════════════════════════
+def sync_ledger_with_wp(ledger: dict):
+    """
+    Fetch all existing 'tax-attorney-*' pages from WordPress and add them
+    to the ledger so we never waste API calls re-checking them.
+    Run this once before starting daily publishing.
+    """
+    log.info("Syncing ledger with existing WordPress pages...")
+    published_slugs = {e["slug"] for e in ledger["published"]}
+
+    session = requests.Session()
+    session.auth = (
+        os.getenv("WP_USERNAME", ""),
+        os.getenv("WP_APP_PASSWORD", ""),
+    )
+
+    page_num = 1
+    found = 0
+    added = 0
+
+    while True:
+        resp = session.get(
+            f"{WP_BASE_URL.rstrip('/')}/wp-json/wp/v2/pages",
+            params={"per_page": 100, "page": page_num, "status": "publish"},
+        )
+        if resp.status_code != 200:
+            break
+
+        pages = resp.json()
+        if not pages:
+            break
+
+        for p in pages:
+            slug = p.get("slug", "")
+            if slug.startswith("tax-attorney-") and slug not in published_slugs:
+                ledger["published"].append({
+                    "slug": slug,
+                    "city": slug.replace("tax-attorney-", "").rsplit("-", 1)[0].replace("-", " ").title(),
+                    "state": slug.rsplit("-", 1)[-1].upper(),
+                    "date": p.get("date", "synced"),
+                    "wp_id": p.get("id"),
+                    "url": p.get("link", ""),
+                    "synced": True,
+                })
+                added += 1
+            found += 1
+
+        page_num += 1
+
+    log.info(f"  Found {found} total pages on WP")
+    log.info(f"  Added {added} to ledger (were missing)")
+    log.info(f"  Ledger now has {len(ledger['published'])} published entries")
+
+
+# ═════════════════════════════════════════════════════════════════════════
 # PUBLISH — uses generate_pages.WordPressPublisher + render_location_page
 # ═════════════════════════════════════════════════════════════════════════
 def publish_one_page(row: dict, template: str) -> dict:
@@ -246,7 +302,14 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Preview only — no publish, no email")
     parser.add_argument("--slug", help="Force-publish a specific slug")
     parser.add_argument("--status", action="store_true", help="Show queue status and exit")
+    parser.add_argument("--sync", action="store_true", help="Sync ledger with existing WP pages (run once)")
     args = parser.parse_args()
+
+    # ── Sync: pull existing pages from WP into ledger ────────────────
+    if args.sync:
+        sync_ledger_with_wp(ledger)
+        save_ledger(ledger)
+        return
 
     ledger = load_ledger()
     queue = build_queue(ledger)

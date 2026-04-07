@@ -51,6 +51,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Sync ledger with existing WP pages
+        run: python daily_publish.py --sync
+
       - name: Run daily publisher
         run: |
           FLAGS=""
