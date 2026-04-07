@@ -305,13 +305,14 @@ def main():
     parser.add_argument("--sync", action="store_true", help="Sync ledger with existing WP pages (run once)")
     args = parser.parse_args()
 
+    ledger = load_ledger()
+
     # ── Sync: pull existing pages from WP into ledger ────────────────
     if args.sync:
         sync_ledger_with_wp(ledger)
         save_ledger(ledger)
         return
 
-    ledger = load_ledger()
     queue = build_queue(ledger)
 
     # ── Status ───────────────────────────────────────────────────────
