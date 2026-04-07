@@ -32,8 +32,16 @@
       "date": "2026-04-07T12:33:50.176257+00:00",
       "wp_id": 11,
       "url": "https://cms.neiljesanitaxresolution.com/tax-attorney-carson-city-nv/"
+    },
+    {
+      "slug": "tax-attorney-coral-gables-fl",
+      "city": "Coral Gables",
+      "state": "FL",
+      "date": "2026-04-07T17:35:55.044127+00:00",
+      "wp_id": 12,
+      "url": "https://cms.neiljesanitaxresolution.com/tax-attorney-coral-gables-fl/"
     }
   ],
   "failed": [],
-  "last_run": "2026-04-07T12:33:50.176285+00:00"
+  "last_run": "2026-04-07T17:35:55.044151+00:00"
 }
