@@ -114,6 +114,20 @@ def sync_ledger_with_wp(ledger: dict):
     log.info(f"  Synced: {added} new entries added to ledger")
 
 
+def _parse_priority(val) -> int:
+    """Convert priority column to int. Handles 'High', 'Medium', 'Low', numbers, or empty."""
+    if not val:
+        return 99
+    val_str = str(val).strip().lower()
+    mapping = {"high": 1, "medium": 2, "low": 3}
+    if val_str in mapping:
+        return mapping[val_str]
+    try:
+        return int(float(val_str))
+    except (ValueError, TypeError):
+        return 99
+
+
 # ═════════════════════════════════════════════════════════════════════════
 # QUEUE — reads ALL rows from Excel (including placeholder ones)
 # ═════════════════════════════════════════════════════════════════════════
@@ -167,7 +181,7 @@ def build_full_queue(ledger: dict) -> list[dict]:
             "unique2": str(unique2 or ""),
             "court": str(court or ""),
             "wave": str(wave or ""),
-            "priority": int(priority) if priority else 99,
+            "priority": _parse_priority(priority),
             "needs_generation": needs_generation,
         })
 
