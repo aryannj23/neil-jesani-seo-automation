@@ -59,7 +59,8 @@ log = logging.getLogger(__name__)
 # ── Config ───────────────────────────────────────────────────────────────
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 EMAIL_FROM     = "Neil Jesani Publisher <bot@neiljesanitaxresolution.com>"
-EMAIL_TO       = "aryan@neiljesani.com"
+EMAIL_TO       = ["aryan@neiljesani.com", "stevek@neiljesani.com"]
+FRONTEND_URL   = "https://neiljesanitaxresolution.com"
 PUBLISH_LEDGER = Path("./publish_ledger.json")
 
 
@@ -287,7 +288,8 @@ def send_email(result: dict, queue_remaining: int):
 
     now = datetime.now(timezone.utc).strftime("%b %d, %Y at %H:%M UTC")
     slug = result["slug"]
-    url = result.get("url", f"{WP_BASE_URL}/{slug}/")
+    frontend_url = f"{FRONTEND_URL}/{slug}/"
+    cms_url = result.get("url", f"{WP_BASE_URL}/{slug}/")
     status = result["status"]
 
     if status == "published":
@@ -299,7 +301,9 @@ def send_email(result: dict, queue_remaining: int):
             </div>
             <table style="width: 100%; border-collapse: collapse;">
                 <tr><td style="padding: 10px 0; font-weight: bold; width: 140px;">Live URL</td>
-                    <td style="padding: 10px 0;"><a href="{url}" style="color: #1565c0;">{url}</a></td></tr>
+                    <td style="padding: 10px 0;"><a href="{frontend_url}" style="color: #1565c0;">{frontend_url}</a></td></tr>
+                <tr><td style="padding: 10px 0; font-weight: bold;">CMS URL</td>
+                    <td style="padding: 10px 0;"><a href="{cms_url}" style="color: #888;">{cms_url}</a></td></tr>
                 <tr><td style="padding: 10px 0; font-weight: bold;">WP Page ID</td>
                     <td style="padding: 10px 0;">{result.get("id", "—")}</td></tr>
                 <tr><td style="padding: 10px 0; font-weight: bold;">Published</td>
