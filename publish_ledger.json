@@ -16,8 +16,16 @@
       "date": "2026-04-07T12:17:48.582306+00:00",
       "wp_id": 9,
       "url": "https://cms.neiljesanitaxresolution.com/tax-attorney-aventura-fl/"
+    },
+    {
+      "slug": "tax-attorney-boca-raton-fl",
+      "city": "Boca Raton",
+      "state": "FL",
+      "date": "2026-04-07T12:28:31.595897+00:00",
+      "wp_id": 10,
+      "url": "https://cms.neiljesanitaxresolution.com/tax-attorney-boca-raton-fl/"
     }
   ],
   "failed": [],
-  "last_run": "2026-04-07T12:17:48.582323+00:00"
+  "last_run": "2026-04-07T12:28:31.595922+00:00"
 }
