@@ -227,6 +227,27 @@ def generate_for_one_city(city_data: dict) -> tuple[str, str]:
 
 
 # ═════════════════════════════════════════════════════════════════════════
+# CONTENT AUDIT — check for banned words before publishing
+# ═════════════════════════════════════════════════════════════════════════
+BANNED_PHRASES = [
+    "tax court", "us tax court", "u.s. tax court",
+    "litigation", "litigate",
+    "criminal", "criminal investigation",
+    "trial", "courtroom", "court-admitted",
+    "court proceedings", "prosecute", "prosecution",
+]
+
+def audit_content(para1: str, para2: str) -> list[str]:
+    """Check paragraphs for banned phrases. Returns list of violations found."""
+    violations = []
+    combined = (para1 + " " + para2).lower()
+    for phrase in BANNED_PHRASES:
+        if phrase in combined:
+            violations.append(phrase)
+    return violations
+
+
+# ═════════════════════════════════════════════════════════════════════════
 # PUBLISH ONE PAGE
 # ═════════════════════════════════════════════════════════════════════════
 def publish_one_page(city_data: dict, para1: str, para2: str, template: str) -> dict:
@@ -338,7 +359,13 @@ def send_email(result: dict, queue_remaining: int):
     try:
         resp = requests.post("https://api.resend.com/emails", headers={
             "Authorization": f"Bearer {RESEND_API_KEY}", "Content-Type": "application/json",
-        }, json={"from": EMAIL_FROM, "to": EMAIL_TO[0], "cc": EMAIL_TO[1:], "subject": subject, "html": body})
+        }, json={
+            "from": EMAIL_FROM,
+            "to": EMAIL_TO[0],
+            "cc": EMAIL_TO[1:],
+            "subject": subject,
+            "html": body,
+        })
         if resp.status_code == 200:
             log.info(f"✉️  Email sent to {EMAIL_TO}")
         else:
@@ -419,6 +446,33 @@ def main():
         para1 = target["unique1"]
         para2 = target["unique2"]
 
+    # ── Audit content for banned words ───────────────────────────────
+    MAX_RETRIES = 3
+    for attempt in range(MAX_RETRIES):
+        violations = audit_content(para1, para2)
+        if not violations:
+            if attempt > 0:
+                log.info(f"  ✅ Content clean after {attempt + 1} attempts")
+            break
+        log.warning(f"  ⚠️  Banned words found: {violations} — regenerating (attempt {attempt + 2}/{MAX_RETRIES})")
+        para1, para2 = generate_for_one_city(target)
+    else:
+        violations = audit_content(para1, para2)
+        if violations:
+            log.error(f"  ❌ Still has banned words after {MAX_RETRIES} attempts: {violations}")
+            log.error(f"  Skipping {target['slug']} — needs manual review")
+            entry = {
+                "slug": target["slug"],
+                "city": target["city"],
+                "state": target["state_abbreviation"],
+                "date": datetime.now(timezone.utc).isoformat(),
+                "error": f"Banned words after {MAX_RETRIES} retries: {violations}",
+            }
+            ledger["failed"].append(entry)
+            save_ledger(ledger)
+            send_email({"status": "failed", "slug": target["slug"], "error": f"Content audit failed — banned words: {violations}"}, len(queue))
+            return
+
     # ── Load template ────────────────────────────────────────────────
     tpl = Path(TEMPLATE_PATH)
     if not tpl.exists():
@@ -427,6 +481,14 @@ def main():
 
     # ── Publish ──────────────────────────────────────────────────────
     log.info("  Publishing to WordPress...")
+
+    # Final audit on the full rendered page (template + paragraphs)
+    tpl_check = template.lower()
+    tpl_violations = [p for p in BANNED_PHRASES if p in tpl_check]
+    if tpl_violations:
+        log.warning(f"  ⚠️  Template itself contains banned words: {tpl_violations}")
+        log.warning(f"  Update location_page_template.html to remove these.")
+
     result = publish_one_page(target, para1, para2, template)
     log.info(f"  → {result['status'].upper()}")
 

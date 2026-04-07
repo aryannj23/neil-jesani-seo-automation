@@ -121,7 +121,7 @@ STATE_TAX_CONTEXT = {
     },
     "WA": {
         "sentence": "Washington's new 7% capital gains tax on gains over $250,000 (effective 2023) creates fresh audit exposure for Amazon, Microsoft, and other tech company employees alongside ongoing federal IRS risk.",
-        "detail": "Washington State's capital gains tax — upheld by the Washington Supreme Court in 2023 — imposes a 7% tax on capital gains over $250,000 per year. This creates new state audit exposure for Washington residents with significant investment income, equity compensation, or business sale proceeds. The Washington Department of Revenue administers this tax alongside the state's business and occupation (B&O) tax. For Seattle-area tech employees with significant RSU, stock option, and investment income, both state and federal audit risk are elevated."
+        "detail": "Washington State's capital gains tax — imposed at 7% on capital gains over $250,000 per year — creates new state audit exposure for Washington residents with significant investment income, equity compensation, or business sale proceeds. The Washington Department of Revenue administers this tax alongside the state's business and occupation (B&O) tax. For Seattle-area tech employees with significant RSU, stock option, and investment income, both state and federal audit risk are elevated."
     },
     "NC": {
         "sentence": "North Carolina's flat income tax rate is declining under current legislation — from 4.75% in 2024 toward 3.99% by 2026 — but IRS federal audit exposure is unchanged.",
@@ -154,7 +154,7 @@ def build_location_schema(row: dict) -> str:
                 "@type": ["LegalService", "LocalBusiness"],
                 "@id": f"{WP_BASE_URL}/tax-attorney-{city_slug}-{state_abbr.lower()}/#organization",
                 "name": "Neil Jesani Tax Resolution",
-                "description": f"IRS audit defense, tax debt resolution, and Tax Court representation for {row['city']}, {row['state_name']} residents.",
+                "description": f"IRS audit defense, tax debt resolution, and IRS dispute representation for {row['city']}, {row['state_name']} residents.",
                 "url": f"{WP_BASE_URL}/tax-attorney-{city_slug}-{state_abbr.lower()}/",
                 "telephone": CTA_PHONE,
                 "priceRange": "Consultation: Free",
@@ -178,10 +178,10 @@ def build_location_schema(row: dict) -> str:
                     "itemListElement": [
                         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "IRS Audit Defense"}},
                         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "IRS Appeals Representation"}},
-                        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "US Tax Court Litigation"}},
                         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "IRS Collections Defense"}},
                         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Offer in Compromise"}},
                         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "IRS Penalty Abatement"}},
+                        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Unfiled Tax Returns"}},
                     ]
                 },
                 "sameAs": [
@@ -192,7 +192,7 @@ def build_location_schema(row: dict) -> str:
                     "@type": "Person",
                     "name": "Neil Jesani",
                     "jobTitle": "Tax Attorney, CPA",
-                    "knowsAbout": ["IRS Audit Defense", "Tax Controversy", "US Tax Court", "Tax Debt Resolution"]
+                    "knowsAbout": ["IRS Audit Defense", "Tax Controversy", "IRS Appeals", "Tax Debt Resolution"]
                 }
             },
             {
@@ -216,10 +216,10 @@ def build_location_schema(row: dict) -> str:
                     },
                     {
                         "@type": "Question",
-                        "name": f"Can I challenge an IRS decision in Tax Court from {row['city']}, {row['state_name']}?",
+                        "name": f"Can I challenge an IRS decision from {row['city']}, {row['state_name']}?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": f"Yes. US Tax Court accepts petitions from taxpayers nationwide. You can challenge an IRS deficiency without paying the disputed tax first. Our Tax Court-admitted attorneys represent {row['city']}-area clients. The deadline is 90 days from your Notice of Deficiency."
+                            "text": f"Yes. If you disagree with an IRS determination, you have the right to appeal through the IRS Office of Appeals. Our tax attorneys represent {row['city']}-area clients through the full appeals process. The deadline to respond to a Notice of Deficiency is 90 days — acting quickly is critical."
                         }
                     }
                 ]
@@ -424,7 +424,7 @@ def render_notice_page(notice: dict) -> str:
 
   <div class="njtr-cta-block">
     <strong>Received IRS {notice['code']}? We Can Help.</strong>
-    <p>Neil Jesani's team of Tax Court attorneys, CPAs, and Enrolled Agents responds to IRS {notice['code']} notices for high-net-worth individuals and business owners nationwide.</p>
+    <p>Neil Jesani's team of tax attorneys, CPAs, and Enrolled Agents responds to IRS {notice['code']} notices for high-net-worth individuals and business owners nationwide.</p>
     <a href="/contact/" class="njtr-cta-btn">Schedule a Free Consultation</a>
     <span class="njtr-cta-phone">or Call {CTA_PHONE} — Confidential, No Obligation</span>
   </div>
@@ -460,7 +460,7 @@ def render_notice_page(notice: dict) -> str:
 
 <div class="njtr-cta-block">
   <strong>IRS {notice['code']} — Act Within Your Deadline.</strong>
-  <p>Our Tax Court attorneys and CPAs respond to IRS {notice['code']} notices every day. Confidential consultation — no obligation.</p>
+  <p>Our tax attorneys and CPAs respond to IRS {notice['code']} notices every day. Confidential consultation — no obligation.</p>
   <a href="/contact/" class="njtr-cta-btn">Schedule a Free Consultation</a>
   <span class="njtr-cta-phone">{CTA_PHONE}</span>
 </div>
@@ -666,7 +666,7 @@ def main():
         slug = f"tax-attorney-{city_slug}-{state_slug}"
         
         title = f"Tax Attorney in {row['city']}, {row['state_name']}: IRS Audit & Tax Resolution Help"
-        meta_desc = (f"Facing the IRS in {row['city']}? Neil Jesani's team of Tax Court attorneys, CPAs, "
+        meta_desc = (f"Facing the IRS in {row['city']}? Neil Jesani's team of tax attorneys, CPAs, "
                      f"and Enrolled Agents helps {row['city']} residents resolve IRS audits, tax debt, "
                      f"and collections. Free consultation: {CTA_PHONE}.")
         

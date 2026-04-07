@@ -79,7 +79,17 @@ RULES:
 - Do not mention competitor firm names
 - Do not use phrases like "In conclusion", "It is important to note", or other filler
 - Write in active voice, no more than 3-4 sentences per paragraph within the 200-word block
-- Each paragraph must be genuinely different from the other — different angle, different content"""
+- Each paragraph must be genuinely different from the other — different angle, different content
+- CRITICAL CONTENT RESTRICTIONS — do NOT use any of these words or phrases:
+  * "Tax Court" or "US Tax Court"
+  * "litigation" or "litigate"
+  * "criminal" or "Criminal Investigation"
+  * "trial" or "courtroom"
+  * "court-admitted" or "court proceedings"
+  * "prosecute" or "prosecution"
+  Instead use: "IRS dispute resolution", "IRS appeals", "tax controversy", "IRS representation", "audit defense"
+- Position the firm as tax attorneys who resolve IRS problems through negotiation, appeals, and representation — NOT through court action
+- Focus on: audit defense, Offers in Compromise, penalty abatement, collections defense, installment agreements, unfiled returns, IRS appeals"""
 
 def generate_paragraphs(client: anthropic.Anthropic, city: str, state_name: str, 
                          state_abbr: str, metro: str, tax_rate: str, 
@@ -99,10 +109,12 @@ CITY CONTEXT:
 - State-specific context for audit risk: {state_note}
 
 PARAGRAPH 1 — "IRS Enforcement in {city}, {state_name}: What Local Taxpayers Need to Know"
-Write 200-250 words. Cover: the local tax environment, why HNWI residents in {metro} face elevated federal IRS audit risk, and what types of IRS examination are most relevant for this specific market. Be specific to {city} — mention local industries, economic characteristics, or the specific taxpayer profile in this area.
+Write 200-250 words. Cover: the local tax environment, why HNWI residents in {metro} face elevated federal IRS audit risk, and what types of IRS examination are most relevant for this specific market. Be specific to {city} — mention local industries, economic characteristics, or the specific taxpayer profile in this area. Do NOT mention Tax Court, litigation, criminal investigation, or any court-related terms.
 
 PARAGRAPH 2 — "Tax Resolution Challenges Specific to {city} Taxpayers"  
-Write 200-250 words. Different angle from paragraph 1. Cover: specific tax controversy issues unique to {city} (e.g., specific industries present, income types, entity structures, or demographic characteristics that create IRS audit exposure). Mention any relevant local economic factors, recent migration patterns, or industry concentrations that affect federal tax audit risk in {city}.
+Write 200-250 words. Different angle from paragraph 1. Cover: specific tax controversy issues unique to {city} (e.g., specific industries present, income types, entity structures, or demographic characteristics that create IRS audit exposure). Mention any relevant local economic factors, recent migration patterns, or industry concentrations that affect federal tax audit risk in {city}. Do NOT mention Tax Court, litigation, criminal investigation, or any court-related terms. Focus on how a tax attorney resolves these issues through IRS negotiation, appeals, and representation.
+
+REMINDER: Never use the words "Tax Court", "litigation", "criminal", "trial", "courtroom", "prosecute", or "court-admitted" anywhere in your response.
 
 Format your response as:
 PARA1:
