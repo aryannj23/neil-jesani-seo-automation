@@ -338,7 +338,7 @@ def send_email(result: dict, queue_remaining: int):
     try:
         resp = requests.post("https://api.resend.com/emails", headers={
             "Authorization": f"Bearer {RESEND_API_KEY}", "Content-Type": "application/json",
-        }, json={"from": EMAIL_FROM, "to": [EMAIL_TO], "subject": subject, "html": body})
+        }, json={"from": EMAIL_FROM, "to": EMAIL_TO[0], "cc": EMAIL_TO[1:], "subject": subject, "html": body})
         if resp.status_code == 200:
             log.info(f"✉️  Email sent to {EMAIL_TO}")
         else:
