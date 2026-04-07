@@ -1,8 +1,9 @@
 name: Daily Page Publish
 
 on:
-  schedule:
-    - cron: '0 14 * * *'  # 9 AM EST daily
+  # PAUSED — uncomment when content is fixed
+  # schedule:
+  #   - cron: '0 14 * * *'
   workflow_dispatch:
     inputs:
       mode:

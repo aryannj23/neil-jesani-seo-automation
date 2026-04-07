@@ -1,0 +1,93 @@
+name: Cleanup — Delete All Location Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type DELETE to confirm deletion of all tax-attorney pages'
+        required: true
+        type: string
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    env:
+      WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
+      WP_USERNAME: ${{ secrets.WP_USERNAME }}
+      WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests python-dotenv
+
+      - name: Delete all tax-attorney pages from WordPress
+        if: ${{ inputs.confirm == 'DELETE' }}
+        run: |
+          python -c "
+          import os, requests
+
+          base = os.environ['WP_BASE_URL'].rstrip('/')
+          session = requests.Session()
+          session.auth = (os.environ['WP_USERNAME'], os.environ['WP_APP_PASSWORD'])
+
+          # Fetch all pages
+          all_pages = []
+          page_num = 1
+          while True:
+              resp = session.get(f'{base}/wp-json/wp/v2/pages', params={'per_page': 100, 'page': page_num, 'status': 'publish'})
+              if resp.status_code != 200:
+                  break
+              pages = resp.json()
+              if not pages:
+                  break
+              all_pages.extend(pages)
+              page_num += 1
+
+          to_delete = [p for p in all_pages if p.get('slug', '').startswith('tax-attorney-')]
+          print(f'Found {len(to_delete)} tax-attorney pages to delete')
+
+          deleted = 0
+          for p in to_delete:
+              resp = session.delete(f'{base}/wp-json/wp/v2/pages/{p[\"id\"]}', params={'force': True})
+              if resp.status_code == 200:
+                  print(f'  ✓ Deleted: /{p[\"slug\"]}/ (ID {p[\"id\"]})')
+                  deleted += 1
+              else:
+                  print(f'  ✗ Failed: /{p[\"slug\"]}/ — {resp.status_code}')
+
+          print(f'\nDeleted {deleted}/{len(to_delete)} pages from WordPress')
+          "
+
+      - name: Reset ledger and commit
+        if: ${{ inputs.confirm == 'DELETE' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Delete ledger if it exists
+          if [ -f publish_ledger.json ]; then
+            git rm publish_ledger.json
+            git commit -m "🧹 Clean slate — deleted all location pages + reset ledger"
+            git push
+          else
+            echo "No ledger to delete — already clean."
+          fi
+
+      - name: Safety check
+        if: ${{ inputs.confirm != 'DELETE' }}
+        run: |
+          echo "❌ You must type DELETE to confirm. Got: '${{ inputs.confirm }}'"
+          exit 1
