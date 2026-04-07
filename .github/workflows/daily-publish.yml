@@ -1,0 +1,83 @@
+name: Daily Page Publish
+
+# Runs every day at 2:00 PM UTC = 9:00 AM EST
+# Also has a manual "Run workflow" button in GitHub
+on:
+  schedule:
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: true
+        default: 'publish'
+        type: choice
+        options:
+          - publish
+          - dry-run
+          - status
+      slug:
+        description: 'Force a specific slug (optional)'
+        required: false
+        type: string
+
+jobs:
+  publish-one-page:
+    runs-on: ubuntu-latest
+    
+    # Give the job write access so it can commit the updated ledger
+    permissions:
+      contents: write
+
+    steps:
+      # 1. Check out your repo
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: pip install openpyxl requests python-dotenv
+
+      # 4. Run the publisher script
+      - name: Run daily publisher
+        env:
+          WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
+          WP_USERNAME: ${{ secrets.WP_USERNAME }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          # Determine flags based on manual input or default (scheduled = just publish)
+          FLAGS=""
+          
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MODE="${{ inputs.mode }}"
+            SLUG="${{ inputs.slug }}"
+            
+            if [ "$MODE" = "dry-run" ]; then
+              FLAGS="--dry-run"
+            elif [ "$MODE" = "status" ]; then
+              FLAGS="--status"
+            fi
+            
+            if [ -n "$SLUG" ]; then
+              FLAGS="$FLAGS --slug $SLUG"
+            fi
+          fi
+          
+          python daily_publish.py $FLAGS
+
+      # 5. Commit the updated ledger back to the repo
+      #    (so it remembers what was published for the next run)
+      - name: Commit updated ledger
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add publish_ledger.json
+          git diff --staged --quiet || git commit -m "📄 Published page — $(date -u '+%Y-%m-%d')"
+          git push
