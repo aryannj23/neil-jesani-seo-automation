@@ -8,8 +8,16 @@
       "wp_id": 8,
       "url": "https://cms.neiljesanitaxresolution.com/tax-attorney-miami-fl/",
       "synced": true
+    },
+    {
+      "slug": "tax-attorney-aventura-fl",
+      "city": "Aventura",
+      "state": "FL",
+      "date": "2026-04-07T12:17:48.582306+00:00",
+      "wp_id": 9,
+      "url": "https://cms.neiljesanitaxresolution.com/tax-attorney-aventura-fl/"
     }
   ],
   "failed": [],
-  "last_run": "2026-04-07T12:04:19.533131+00:00"
+  "last_run": "2026-04-07T12:17:48.582323+00:00"
 }
