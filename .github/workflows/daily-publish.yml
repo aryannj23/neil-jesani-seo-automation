@@ -26,7 +26,6 @@ jobs:
     permissions:
       contents: write
 
-    # Same env vars as your working programmatic-seo pipeline
     env:
       WP_BASE_URL: ${{ secrets.WP_BASE_URL }}
       WP_USERNAME: ${{ secrets.WP_USERNAME }}
@@ -46,54 +45,37 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      # Same install as your working pipeline
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Generate AI paragraphs first (same as your programmatic-seo pipeline step 4)
-      - name: Generate unique paragraphs via Claude API
-        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode != 'status') }}
-        run: python generate_unique_paragraphs.py
-
-      - name: Sync ledger with existing WP pages
+      # Sync ledger with WP so we never re-publish existing pages
+      - name: Sync ledger with WordPress
         run: python daily_publish.py --sync
 
+      # The main event: generate 1 city's paragraphs + publish 1 page + email
       - name: Run daily publisher
         run: |
           FLAGS=""
-
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             MODE="${{ inputs.mode }}"
             SLUG="${{ inputs.slug }}"
-
-            if [ "$MODE" = "dry-run" ]; then
-              FLAGS="--dry-run"
-            elif [ "$MODE" = "status" ]; then
-              FLAGS="--status"
-            fi
-
-            if [ -n "$SLUG" ]; then
-              FLAGS="$FLAGS --slug $SLUG"
-            fi
+            if [ "$MODE" = "dry-run" ]; then FLAGS="--dry-run"; fi
+            if [ "$MODE" = "status" ]; then FLAGS="--status"; fi
+            if [ -n "$SLUG" ]; then FLAGS="$FLAGS --slug $SLUG"; fi
           fi
-
           python daily_publish.py $FLAGS
 
+      # Save the ledger so tomorrow's run knows what was published
       - name: Commit updated ledger
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          if [ -f publish_ledger.json ]; then
-            git add publish_ledger.json
-            if git diff --staged --quiet; then
-              echo "No ledger changes to commit."
-            else
-              git commit -m "📄 Published page — $(date -u '+%Y-%m-%d')"
-              git push
-            fi
+          git add publish_ledger.json || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
           else
-            echo "No publish_ledger.json found — nothing to commit."
+            git commit -m "📄 Daily publish — $(date -u '+%Y-%m-%d')"
+            git push
           fi
