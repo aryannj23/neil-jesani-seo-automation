@@ -19,72 +19,67 @@ CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 REFRESH_TOKEN = os.environ.get("GOOGLE_REFRESH_TOKEN")
 MODEL = "claude-sonnet-4-20250514"
 
-NEIL_BIO = """
-Neil Jesani is a CPA and tax strategist with 15+ years of experience.
-He specializes in US-India cross-border tax planning, IRS compliance,
-tax resolution, and small business tax strategy. He advises
-high-net-worth individuals and business owners on complex IRS matters
-including audits, liens, levies, and installment agreements.
-Based in Fort Lauderdale, FL and Las Vegas, NV.
-Website: neiljesanitaxresolution.com
-"""
+NEIL_BIO = """Neil Jesani, CPA with 15+ years experience. Specializes in US-India cross-border tax, IRS compliance, tax resolution, small business tax strategy. Based in Fort Lauderdale & Las Vegas. Website: neiljesanitaxresolution.com"""
 
 client = anthropic.Anthropic()
+
+
+# ── Retry wrapper ───────────────────────────────────────
+def call_claude(messages, tools=None, max_retries=3):
+    """Call Claude API with automatic retry on rate limit errors."""
+    for attempt in range(max_retries):
+        try:
+            kwargs = {
+                "model": MODEL,
+                "max_tokens": 2048,
+                "messages": messages,
+            }
+            if tools:
+                kwargs["tools"] = tools
+            return client.messages.create(**kwargs)
+        except anthropic.RateLimitError as e:
+            wait = 60 * (attempt + 1)  # 60s, 120s, 180s
+            print(f"   ⏳ Rate limited. Waiting {wait}s (attempt {attempt + 1}/{max_retries})...")
+            time.sleep(wait)
+    print("   ❌ Failed after all retries.")
+    return None
 
 
 # ── Step 1: Find opportunities ──────────────────────────
 def find_opportunities():
     print("🔍 Searching for journalist opportunities...")
 
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=4096,
+    response = call_claude(
+        messages=[{
+            "role": "user",
+            "content": f"""PR research assistant for {NEIL_BIO}
+
+Search for:
+1. Breaking IRS/tax news from last 48 hours
+2. Journalist queries on Connectively, Qwoted, SourceBottle related to tax/IRS/accounting
+3. Trending tax stories needing a CPA expert source
+
+Return JSON array only (no fences). Each item:
+{{"source":"...","headline":"...","angle":"...","urgency":"high|medium|low","journalist_name":null,"outlet":null}}
+
+Find 3-5 opportunities.""",
+        }],
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
-        messages=[
-            {
-                "role": "user",
-                "content": f"""You are a PR research assistant for Neil Jesani, a CPA and tax strategist.
-
-Search for ALL of these (do multiple searches):
-1. Breaking IRS news or tax policy changes from the last 24-48 hours
-2. Journalist queries on HARO, Connectively, Qwoted, SourceBottle, or Help a B2B Writer related to tax, IRS, accounting, or small business finance
-3. Trending tax-related stories where a CPA expert source would add value
-4. Any upcoming tax deadlines or IRS announcements that journalists might cover
-
-Neil's expertise: {NEIL_BIO}
-
-Return a JSON array of opportunities. Each item must have:
-- "source": where you found it (publication name or platform)
-- "headline": the news item or journalist query
-- "angle": how Neil could contribute as an expert (1-2 sentences)
-- "urgency": "high" or "medium" or "low"
-- "journalist_name": name if available, otherwise null
-- "outlet": publication/outlet if available, otherwise null
-
-Find at least 3-5 opportunities. Return ONLY the JSON array, no markdown fences, no explanation.""",
-            }
-        ],
     )
 
-    text = "".join(
-        block.text for block in response.content if block.type == "text"
-    )
+    if not response:
+        return []
 
-    # Clean up potential markdown fences
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1]
-    if text.endswith("```"):
-        text = text.rsplit("```", 1)[0]
-    text = text.strip()
+    text = "".join(b.text for b in response.content if b.type == "text")
+    text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
 
     try:
         opportunities = json.loads(text)
         print(f"   Found {len(opportunities)} opportunities")
         return opportunities
     except json.JSONDecodeError as e:
-        print(f"   ❌ Failed to parse opportunities: {e}")
-        print(f"   Raw response: {text[:500]}")
+        print(f"   ❌ Failed to parse: {e}")
+        print(f"   Raw: {text[:300]}")
         return []
 
 
@@ -92,71 +87,44 @@ Find at least 3-5 opportunities. Return ONLY the JSON array, no markdown fences,
 def draft_pitches(opportunities):
     print("✍️  Drafting pitches...")
 
-    # Sort by urgency, take top 3
     order = {"high": 0, "medium": 1, "low": 2}
     top = sorted(opportunities, key=lambda x: order.get(x.get("urgency", "low"), 2))[:3]
 
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=4096,
-        messages=[
-            {
-                "role": "user",
-                "content": f"""You are drafting journalist pitch emails on behalf of Neil Jesani, CPA.
+    response = call_claude(
+        messages=[{
+            "role": "user",
+            "content": f"""Draft journalist pitch emails for {NEIL_BIO}
 
-Neil's background:
-{NEIL_BIO}
+Opportunities:
+{json.dumps(top)}
 
-Opportunities to pitch on:
-{json.dumps(top, indent=2)}
+For each, draft a pitch email under 120 words with subject line. Professional, warm, not salesy. Close with availability for interview.
 
-For each opportunity, draft a short pitch email (under 150 words). The pitch should:
-- Have a compelling subject line
-- Open with a timely hook referencing the news/query
-- Position Neil as a credible source in 1-2 sentences
-- Offer a specific angle or talking point Neil could provide
-- Close with availability (available for phone/email/video interview)
-- Sign off as Neil Jesani, CPA
-
-Tone: professional but warm, not salesy. Like a helpful expert reaching out.
-
-Return a JSON array where each item has:
-- "opportunity_headline": string
-- "subject_line": string
-- "body": string (the full email body)
-- "journalist_name": string or null
-- "outlet": string or null
-
-Return ONLY the JSON array, no markdown fences.""",
-            }
-        ],
+Return JSON array only (no fences). Each item:
+{{"opportunity_headline":"...","subject_line":"...","body":"...","journalist_name":null,"outlet":null}}""",
+        }],
     )
 
-    text = "".join(
-        block.text for block in response.content if block.type == "text"
-    )
+    if not response:
+        return []
 
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1]
-    if text.endswith("```"):
-        text = text.rsplit("```", 1)[0]
-    text = text.strip()
+    text = "".join(b.text for b in response.content if b.type == "text")
+    text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
 
     try:
         pitches = json.loads(text)
         print(f"   Drafted {len(pitches)} pitches")
         return pitches
     except json.JSONDecodeError as e:
-        print(f"   ❌ Failed to parse pitches: {e}")
-        print(f"   Raw response: {text[:500]}")
+        print(f"   ❌ Failed to parse: {e}")
+        print(f"   Raw: {text[:300]}")
         return []
 
 
 # ── Step 3: Write to Google Sheet ───────────────────────
 def write_to_sheet(pitches):
     if not SHEET_ID or not REFRESH_TOKEN:
-        print("⚠️  No Google Sheets credentials — printing pitches to console instead:\n")
+        print("⚠️  No Google Sheets credentials — printing to console:\n")
         for i, p in enumerate(pitches, 1):
             print(f"{'='*60}")
             print(f"PITCH {i}")
@@ -190,7 +158,7 @@ def write_to_sheet(pitches):
             p.get("outlet", ""),
             p.get("subject_line", ""),
             p.get("body", ""),
-            "DRAFT",  # Status column — you review and change to APPROVED/SENT
+            "DRAFT",
         ])
 
     sheet.values().append(
@@ -215,8 +183,8 @@ def main():
         print("\n❌ No opportunities found today. Exiting.")
         return
 
-    print("⏳ Waiting 60s to avoid rate limit...")
-    time.sleep(60)
+    print("⏳ Waiting 90s before drafting (rate limit cooldown)...")
+    time.sleep(90)
 
     pitches = draft_pitches(opportunities)
     if not pitches:
