@@ -9,11 +9,13 @@ import json
 from datetime import datetime
 import anthropic
 from googleapiclient.discovery import build
-from google.oauth2 import service_account
+import google.oauth2.credentials
 
 # ── Config ──────────────────────────────────────────────
 SHEET_ID = os.environ.get("PITCH_SHEET_ID")
-CREDS_JSON = os.environ.get("GOOGLE_SHEETS_CREDENTIALS")
+CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+REFRESH_TOKEN = os.environ.get("GOOGLE_REFRESH_TOKEN")
 MODEL = "claude-sonnet-4-20250514"
 
 NEIL_BIO = """
@@ -152,7 +154,7 @@ Return ONLY the JSON array, no markdown fences.""",
 
 # ── Step 3: Write to Google Sheet ───────────────────────
 def write_to_sheet(pitches):
-    if not SHEET_ID or not CREDS_JSON:
+    if not SHEET_ID or not REFRESH_TOKEN:
         print("⚠️  No Google Sheets credentials — printing pitches to console instead:\n")
         for i, p in enumerate(pitches, 1):
             print(f"{'='*60}")
@@ -167,10 +169,12 @@ def write_to_sheet(pitches):
 
     print("📊 Writing to Google Sheet...")
 
-    creds_dict = json.loads(CREDS_JSON)
-    creds = service_account.Credentials.from_service_account_info(
-        creds_dict,
-        scopes=["https://www.googleapis.com/auth/spreadsheets"],
+    creds = google.oauth2.credentials.Credentials(
+        token=None,
+        refresh_token=REFRESH_TOKEN,
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        token_uri="https://oauth2.googleapis.com/token",
     )
     service = build("sheets", "v4", credentials=creds)
     sheet = service.spreadsheets()

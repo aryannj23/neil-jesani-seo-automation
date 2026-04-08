@@ -24,3 +24,5 @@ Thumbs.db
 
 # Logs
 *.log
+
+get_refresh_token.py
