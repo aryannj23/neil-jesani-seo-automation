@@ -25,4 +25,4 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
           PITCH_SHEET_ID: ${{ secrets.PITCH_SHEET_ID }}
-        run: python scripts/journalist_pitch.py
+        run: python journalist_pitch.py
