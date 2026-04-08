@@ -1,0 +1,26 @@
+name: Journalist Pitch Pipeline
+
+on:
+  schedule:
+    - cron: '0 13 * * 1-5'  # 9am ET (13:00 UTC) weekdays
+  workflow_dispatch: {}       # Manual trigger
+
+jobs:
+  pitch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pitch pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          PITCH_SHEET_ID: ${{ secrets.PITCH_SHEET_ID }}
+        run: python scripts/journalist_pitch.py
