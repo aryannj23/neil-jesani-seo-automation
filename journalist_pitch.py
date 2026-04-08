@@ -6,6 +6,7 @@ and writes them to a Google Sheet for review.
 
 import os
 import json
+import time
 from datetime import datetime
 import anthropic
 from googleapiclient.discovery import build
@@ -213,6 +214,9 @@ def main():
     if not opportunities:
         print("\n❌ No opportunities found today. Exiting.")
         return
+
+    print("⏳ Waiting 60s to avoid rate limit...")
+    time.sleep(60)
 
     pitches = draft_pitches(opportunities)
     if not pitches:
