@@ -28,10 +28,17 @@
       "state": "FL",
       "date": "2026-04-10T16:38:18.218779+00:00",
       "wp_id": 19
+    },
+    {
+      "slug": "tax-attorney-coral-springs-fl",
+      "city": "Coral Springs",
+      "state": "FL",
+      "date": "2026-04-11T15:49:36.546897+00:00",
+      "wp_id": 21
     }
   ],
   "failed": [],
-  "last_run": "2026-04-10T16:38:19.328270+00:00",
+  "last_run": "2026-04-11T15:49:38.124721+00:00",
   "published_notices": [
     {
       "slug": "irs-notice-cp14",
@@ -56,6 +63,12 @@
       "code": "CP91",
       "date": "2026-04-10T16:38:19.328201+00:00",
       "wp_id": 20
+    },
+    {
+      "slug": "irs-notice-letter 3172",
+      "code": "Letter 3172",
+      "date": "2026-04-11T15:49:38.124692+00:00",
+      "wp_id": 22
     }
   ]
 }
