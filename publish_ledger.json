@@ -56,10 +56,17 @@
       "state": "NV",
       "date": "2026-04-14T15:20:21.592829+00:00",
       "wp_id": 27
+    },
+    {
+      "slug": "tax-attorney-incline-village-nv",
+      "city": "Incline Village",
+      "state": "NV",
+      "date": "2026-04-15T15:13:27.528492+00:00",
+      "wp_id": 29
     }
   ],
   "failed": [],
-  "last_run": "2026-04-14T15:20:23.302660+00:00",
+  "last_run": "2026-04-15T15:13:28.625102+00:00",
   "published_notices": [
     {
       "slug": "irs-notice-cp14",
@@ -114,6 +121,12 @@
       "code": "CP2000",
       "date": "2026-04-14T15:20:23.302627+00:00",
       "wp_id": 28
+    },
+    {
+      "slug": "irs-notice-cp504",
+      "code": "CP504",
+      "date": "2026-04-15T15:13:28.625076+00:00",
+      "wp_id": 30
     }
   ]
 }
