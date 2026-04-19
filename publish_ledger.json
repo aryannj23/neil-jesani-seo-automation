@@ -84,10 +84,17 @@
       "state": "FL",
       "date": "2026-04-18T14:51:35.295686+00:00",
       "wp_id": 35
+    },
+    {
+      "slug": "tax-attorney-naples-fl",
+      "city": "Naples",
+      "state": "FL",
+      "date": "2026-04-19T14:51:44.828632+00:00",
+      "wp_id": 37
     }
   ],
   "failed": [],
-  "last_run": "2026-04-18T14:51:36.856298+00:00",
+  "last_run": "2026-04-19T14:51:46.338113+00:00",
   "published_notices": [
     {
       "slug": "irs-notice-cp14",
@@ -166,6 +173,18 @@
       "code": "Letter 1058",
       "date": "2026-04-18T14:51:36.856276+00:00",
       "wp_id": 36
+    },
+    {
+      "slug": "irs-notice-letter-1058",
+      "date": "2026-04-18T14:51:36",
+      "wp_id": 36,
+      "synced": true
+    },
+    {
+      "slug": "irs-notice-letter 11",
+      "code": "Letter 11",
+      "date": "2026-04-19T14:51:46.338088+00:00",
+      "wp_id": 38
     }
   ]
 }
