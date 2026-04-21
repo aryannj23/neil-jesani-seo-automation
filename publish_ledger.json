@@ -98,10 +98,17 @@
       "state": "FL",
       "date": "2026-04-20T15:22:50.101281+00:00",
       "wp_id": 39
+    },
+    {
+      "slug": "tax-attorney-palm-beach-fl",
+      "city": "Palm Beach",
+      "state": "FL",
+      "date": "2026-04-21T15:20:35.403449+00:00",
+      "wp_id": 41
     }
   ],
   "failed": [],
-  "last_run": "2026-04-20T15:22:51.247228+00:00",
+  "last_run": "2026-04-21T15:20:36.545550+00:00",
   "published_notices": [
     {
       "slug": "irs-notice-cp14",
@@ -204,6 +211,18 @@
       "code": "Letter 725-B",
       "date": "2026-04-20T15:22:51.247208+00:00",
       "wp_id": 40
+    },
+    {
+      "slug": "irs-notice-letter-725-b",
+      "date": "2026-04-20T15:22:50",
+      "wp_id": 40,
+      "synced": true
+    },
+    {
+      "slug": "irs-notice-notice of deficiency (90-day letter)",
+      "code": "Notice of Deficiency (90-Day Letter)",
+      "date": "2026-04-21T15:20:36.545523+00:00",
+      "wp_id": 42
     }
   ]
 }
